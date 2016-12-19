@@ -6,10 +6,12 @@
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 </head>
-<body>
+<body >
 	<div class="container" id="app">
+		
 		<form @submit.prevent="signUp(false)">
 			<div class="row" style="min-height: 100px">
+				<img src="logo_vue.png" v-bind:title="years_php" width="70px" class="pull-left">
 				<div class="col-xs-12" v-if="name">
 					<h1>{{ gender=='m' ? 'Bienvenido' : 'Bienvenida'}}, {{name}}</h1>
 					<p>Bienvenido al sistema desarrollado en Vue.js {{ !name.split('').reverse().join('') }}¡</p>
@@ -20,12 +22,15 @@
 			<label>Femenino: <input type="radio" value="f" v-model="gender"></label>
 			<p>Cuantos años de experiencia tienes con PHP?</p>
 			<p>
-				<input type="number" name="years_php" v-model="years_php">
-				<button type="button" class="btn" @click="years_php ++">+</button>
-				<button type="button" class="btn" @click="years_php --">-</button>
+				<label>{{years_php}}</label>
+				<button type="button" :class="{ btn:true, 'btn-danger': years_php > 0}" @click="addYears()">+</button>
+				<button type="button" 
+				 :class="{btn:true, 'btn-primary': years_php > 10}"
+				 v-bind:disabled="years_php==0" @click="subYears()">-</button>
 			</p>
 
-			<button type="submit" class="btn btn-primary">Registrar</button>
+			<button type="submit" class="btn btn-primary" 
+			:style="{background: 'rgb(17, '+10*years_php+', 0)'}">Registrar</button>
 			<button type="submit" class="btn btn-primary" @click="signUp(true, $event)">
 				Registrar y Salir
 			</button>
@@ -41,14 +46,14 @@
 		</div>
 		<hr>
 		<div class="row">
-			<pre>{{ $data | json}}</pre>
+			<pre>{{ $data | json }}</pre>
 		</div>
 	</div>
 
 	<script src="js/vue.js"></script>
 	<script type="text/javascript">
 		new Vue({
-			el: "#app",
+			el: '#app',
 			data:{
 				name: "Carlos",
 				gender: "m",
@@ -61,6 +66,12 @@
 						alert(this.name + ' Gracias por registrarte.. Adios!');
 					}else
 						alert(this.name + ' Gracias por registrarte..');
+				},
+				addYears: function(){
+					this.years_php++;
+				},
+				subYears: function(){
+					this.years_php--;
 				}
 			}
 		});
