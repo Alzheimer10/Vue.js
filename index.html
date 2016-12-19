@@ -7,57 +7,171 @@
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 </head>
 <body >
-	<div class="container" id="app">
-		
-		<form @submit.prevent="signUp(false)">
-			<div class="row" style="min-height: 100px">
-				<img src="logo_vue.png" v-bind:title="years_php" width="70px" class="pull-left">
-				<div class="col-xs-12" v-if="name">
-					<h1>{{ gender=='m' ? 'Bienvenido' : 'Bienvenida'}}, {{name}}</h1>
-					<p>Bienvenido al sistema desarrollado en Vue.js {{ !name.split('').reverse().join('') }}¡</p>
+	<div class="container" id="app" style="width: 90%;padding: 0px">
+		<div class="row">
+			<div class="col-md-8">
+				<form @submit.prevent="signUp(false)">
+					<div class="row" style="min-height: 100px">
+						<img src="logo_vue.png" v-bind:title="years_php" width="70px" class="pull-left">
+						<hello-vue class="pull-rigth"></hello-vue>
+						<div class="col-xs-12" v-if="name">
+							<welcome-message v-bind:name="name" v-bind:gender="gender"></welcome-message>
+							<p>Bienvenido al sistema desarrollado en Vue.js {{ !name.split('').reverse().join('') }}¡</p>
+						</div>
+					</div>
+					<div class="input-group">
+					  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+						<input type="text" class="form-control" placeholder="name" v-model="name">
+					</div>
+					<label>Masculino: <input type="radio" value="m" v-model="gender"></label>
+					<label>Femenino: <input type="radio" value="f" v-model="gender"></label>
+					<div class="panel">
+						<h2>Components</h2>
+						<div class="panel panel-default">
+							<template v-for="tech in techs">
+								<years-exp :years.sync="tech.years" :tech='tech.name'></years-exp>
+							</template>
+							<form class="form">
+								<div class="panel-body">
+									<div class="col-md-6">
+										<div class="form-group">
+										  	<label >Name</label>
+											<input type="text" placeholder="name tech" class="form-control" v-model="new_tech.name">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+										  <label >Years:</label>
+										  <select class="form-control" v-model="new_tech.years">
+										    <option>1</option>
+										    <option>2</option>
+										    <option>3</option>
+										    <option>5</option>
+										    <option>6</option>
+										    <option>7</option>
+										    <option>8</option>
+										    <option>9</option>
+										    <option>10</option>
+										  </select>
+										</div>
+									</div>
+									<button type="button" class="btn btn-warning" @click="newTech">Agregar</button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<button type="submit" class="btn btn-primary" 
+					:style="{background: 'rgb(17, '+10*years_php+', 0)'}">Registrar</button>
+					<button type="submit" class="btn btn-primary" @click="signUp(true, $event)">
+						Registrar y Salir
+					</button>
+				</form>
+				<div class="panel">
+					<h2>Example v-for</h2>
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<ul v-for="note in notes" class="list-group">
+								<li class="list-group-item">{{ $index + 1}} {{note.text}} <b>por: {{note.autor}}</b> </li>
+							</ul>
+						</div>
+						<form class="form" @submit.prevent="newNotes">
+							<div class="panel-body">
+								<input type="text" placeholder="Autor" class="form-control" v-model="new_note.autor">
+								<textarea class="form-control" v-model="new_note.text"></textarea>
+								<button type="submit" class="btn btn-primary">Agregar</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="alert alert-danger" v-if="!name | name.length <3">
+					<ul>
+						<li v-show="!name">Ingrese un nombre</li>
+						<li v-show="name.length < 3">El nombre debe ser mayor a 3 caracteres</li>
+					</ul>
 				</div>
 			</div>
-			<input type="text" class="form-control" placeholder="name" v-model="name">
-			<label>Masculino: <input type="radio" value="m" v-model="gender"></label>
-			<label>Femenino: <input type="radio" value="f" v-model="gender"></label>
-			<p>Cuantos años de experiencia tienes con PHP?</p>
-			<p>
-				<label>{{years_php}}</label>
-				<button type="button" :class="{ btn:true, 'btn-danger': years_php > 0}" @click="addYears()">+</button>
-				<button type="button" 
-				 :class="{btn:true, 'btn-primary': years_php > 10}"
-				 v-bind:disabled="years_php==0" @click="subYears()">-</button>
-			</p>
-
-			<button type="submit" class="btn btn-primary" 
-			:style="{background: 'rgb(17, '+10*years_php+', 0)'}">Registrar</button>
-			<button type="submit" class="btn btn-primary" @click="signUp(true, $event)">
-				Registrar y Salir
-			</button>
-		</form>
-		<hr>
-		<div class="row">
-			<div class="alert alert-danger" v-if="!name | name.length <3">
-				<ul>
-					<li v-show="!name">Ingrese un nombre</li>
-					<li v-show="name.length < 3">El nombre debe ser mayor a 3 caracteres</li>
-				</ul>
+			<div class="col-md-4">
+				<div class="row">
+					<pre>{{ $data |json }}</pre>
+				</div>
 			</div>
 		</div>
-		<hr>
-		<div class="row">
-			<pre>{{ $data | json }}</pre>
-		</div>
 	</div>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.12/vue.js"></script>
+<!-- 	<script src="js/vue.js"></script> -->
+	<script type="text/template" id="years_template">
+		<p class="pull-rigth">Cuantos años de experiencia tienes con {{tech}}?
+			<label >( {{years}} )</label>
+			<button type="button" :class="{ btn:true, 'btn-danger': years > 0}" @click="add()"
+				v-bind:disabled="years==10"
+			>+</button>
+			<button type="button" 
+			 :class="{btn:true, 'btn-primary': true}"
+			 v-bind:disabled="years==0" @click="sub()">-</button>
+		</p>
+		<div class="progress">
+		  <div class="progress-bar progress-bar-striped" 
+		  :class="{
+		  'progress-bar-danger': years<3,
+		  'progress-bar-warning':years<6,
+		  'progress-bar-info': years<8,
+		  'progress-bar-success' : years==10}" 
 
-	<script src="js/vue.js"></script>
+		  role="progressbar"
+		  aria-valuenow="" aria-valuemin="0" aria-valuemax="100" :style="{width: 10*years+'%'}">
+		    {{10*years}}% Years
+		   </div>
+		</div>
+	</script>
+	<script type="text/template" id="welcome-message">
+		<h1>{{ gender=='m' ? 'Bienvenido' : 'Bienvenida'}}, {{name}}</h1>
+	</script>
 	<script type="text/javascript">
+		Vue.component('hello-vue',{
+			template: '<h2>Hello Vue.js</h2>'
+		});
+		Vue.component('welcome-message',{
+			template: '#welcome-message',
+			props:{
+				gender: {type: String, require: false, default: 'm'},
+				name: {type: String, require: true}
+			}
+		});
+		Vue.component('years-exp',{
+			template: '#years_template',
+			methods:{
+				add: function(){
+					this.years++;
+				},
+				sub: function(){
+					this.years--;
+				},
+			},
+			props:['years','tech']
+		});
 		new Vue({
 			el: '#app',
 			data:{
 				name: "Carlos",
 				gender: "m",
-				years_php : 0
+				techs: [
+					{ name: 'php', years: 0},
+					{ name: 'js', years: 0},
+					{ name: 'html', years: 0},
+					{ name: 'python', years: 0}
+				],
+				new_tech: {name: '',years: 0},
+				notes: [
+					{
+						text: 'V-for es la directiva que utiliza para tener una lista',
+						autor: 'Dulio'
+					},
+					{
+						text: 'Con vue puedes crear tus propios componentes',
+						autor: 'Styde'
+					}
+				],
+				new_note: {text: '',autor: ''}
 			},
 			methods:{
 				signUp: function(logout,event){
@@ -67,11 +181,13 @@
 					}else
 						alert(this.name + ' Gracias por registrarte..');
 				},
-				addYears: function(){
-					this.years_php++;
+				newNotes: function(){
+					this.notes.push(this.new_note);
+					this.new_note = {text: '',autor: ''};
 				},
-				subYears: function(){
-					this.years_php--;
+				newTech: function(){
+					this.techs.push(this.new_tech);
+					this.new_tech = {name: '',years: 0};
 				}
 			}
 		});
