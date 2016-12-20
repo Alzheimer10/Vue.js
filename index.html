@@ -7,10 +7,13 @@
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 </head>
 <body >
+	<div class="alert alert-success" style="position: absolute;width: 100%;margin: 0px auto;text-align: center; z-index: 100;">
+  		<strong>Success!</strong> You should <a href="#" class="alert-link">read this message</a>.
+	</div>
 	<div class="container" id="app" style="width: 90%;padding: 0px">
 		<div class="row">
 			<div class="col-md-8">
-				<form @submit.prevent="signUp(false)">
+				<form @submit.prevent="signUp(false)"> 
 					<div class="row" style="min-height: 100px">
 						<img src="logo_vue.png" v-bind:title="years_php" width="70px" class="pull-left">
 						<hello-vue class="pull-rigth"></hello-vue>
@@ -27,7 +30,8 @@
 						</div>
 						<div class="col-xs-12" v-if="name || lastname">
 							<welcome-message v-bind:name="name" v-bind:lastname="lastname" v-bind:gender="gender" v-bind:spanish="spanish"></welcome-message>
-							<p>Bienvenido al sistema desarrollado en Vue.js <b>{{reverse_name}}</b> ¡</p>
+							<welcome_system v-bind:reverse_name="reverse_name" v-bind:spanish="spanish"></welcome_system>
+							{{welcome_system}}
 						</div>
 					</div>
 					<div class="input-group">
@@ -56,6 +60,7 @@
 										<div class="form-group">
 										  <label >Years:</label>
 										  <select class="form-control" v-model="new_tech.years">
+										    <option>0</option>
 										    <option>1</option>
 										    <option>2</option>
 										    <option>3</option>
@@ -74,10 +79,12 @@
 						</div>
 					</div>
 					<button type="submit" class="btn btn-primary" 
-					:style="{background: 'rgb(17, '+10*years_php+', 0)'}">Registrar</button>
-					<button type="submit" class="btn btn-primary" @click="signUp(true, $event)">
-						Registrar y Salir
-					</button>
+					:style="{background: 'rgb(17, '+10*years_php+', 0)'}" 
+					@click="signUp(false, $event)"
+					v-bind:disabled="!name || name.length <3 || !lastname || lastname.length < 4">Registrar</button>
+					<button type="submit" class="btn btn-info" 
+					@click="signUp(true, $event)" 
+					v-bind:disabled="!name || name.length <3 || !lastname || lastname.length < 4">Registrar y Salir</button>
 				</form>
 				<div class="panel">
 					<h2>Example v-for</h2>
@@ -90,8 +97,10 @@
 						<form class="form" @submit.prevent="newNotes">
 							<div class="panel-body">
 								<input type="text" placeholder="Autor" class="form-control" v-model="new_note.autor">
+				<hr>
 								<textarea class="form-control" v-model="new_note.text"></textarea>
-								<button type="submit" class="btn btn-primary">Agregar</button>
+				<hr>
+								<button type="submit" class="btn btn-primary" v-bind:disabled="!new_note.autor && new_note.text">Agregar</button>
 							</div>
 						</form>
 					</div>
@@ -108,12 +117,14 @@
 <!-- 	<script src="js/vue.js"></script> -->
 	<script type="text/template" id="years_template">
 		<p class="pull-rigth">Cuantos años de experiencia tienes con {{tech}}?
-			<label >( {{years}} )</label>
+			<label >[ <b style="font-size: 1.2em">{{years}}</b> ]</label>
 			<button type="button" :class="{ btn:true, 'btn-danger': years > 0}" @click="add()"
 				v-bind:disabled="years==10"
+				style="float: right;" 
 			>+</button>
 			<button type="button" 
 			 :class="{btn:true, 'btn-primary': true}"
+				style="float: right;" 
 			 v-bind:disabled="years==0" @click="sub()">-</button>
 		</p>
 		<div class="progress">
@@ -133,9 +144,27 @@
 	<script type="text/template" id="welcome-message">
 		<h1>{{welcome_message}}, {{full_name}}</h1>
 	</script>
+	<script type="text/template" id="welcome_system">
+		<h5>{{welcome_text}}, <b>{{reverse_name}}</b> </h5>
+	</script>
 	<script type="text/javascript">
 		Vue.component('hello-vue',{
 			template: '<h2>Hello Vue.js</h2>'
+		});
+		Vue.component('welcome_system',{
+			template: '#welcome_system',
+			computed:{
+				welcome_text: function(){
+					if (this.spanish)
+						return 'Bienvenido al sistema desarrollado en Vue.js';
+					else
+						return 'Welcome to the system developed in Vue.js';
+				}
+			},
+			props:{
+				spanish: {type: Boolean, require: true, default: true},
+				reverse_name:{type: String}
+			}
 		});
 		Vue.component('welcome-message',{
 			template: '#welcome-message',
@@ -181,10 +210,10 @@
 				gender: "m",
 				spanish: true,
 				techs: [
-					{ name: 'php', years: 0},
-					{ name: 'js', years: 0},
-					{ name: 'html', years: 0},
-					{ name: 'python', years: 0}
+					{ name: 'php', years: 5},
+					{ name: 'js', years: 9},
+					{ name: 'html', years: 2},
+					{ name: 'python', years: 6}
 				],
 				new_tech: {name: '',years: 0},
 				notes: [
@@ -217,8 +246,8 @@
 				}
 			},
 			watch:{
-				spanish: function(spanish){
-					alert(spanish);
+				gender: function(gender){
+					alert(gender);
 				}
 			},
 			computed:{
