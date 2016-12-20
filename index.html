@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 </head>
 <body >
-	<div class="alert alert-success" style="position: absolute;width: 100%;margin: 0px auto;text-align: center; z-index: 100;">
+	<div class="alert alert-success" style="display: none;position: absolute;width: 100%;margin: 0px auto;text-align: center; z-index: 100;">
   		<strong>Success!</strong> You should <a href="#" class="alert-link">read this message</a>.
 	</div>
 	<div class="container" id="app" style="width: 90%;padding: 0px">
@@ -87,6 +87,38 @@
 					v-bind:disabled="!name || name.length <3 || !lastname || lastname.length < 4">Registrar y Salir</button>
 				</form>
 				<div class="panel">
+					<h2>Techs</h2>
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="col-md-3">
+								<h3>orderBy 'name'</h3>
+								<ul v-for="tech in techs | orderBy 'name'">
+									<li>{{ tech.name }}</li>
+								</ul>
+							</div>
+							<div class="col-md-3">
+								<h3>orderBy 'name' -1</h3>
+								<ul v-for="tech in techs | orderBy 'name' -1 ">
+									<li>{{ tech.name }}</li>
+								</ul>
+							</div>
+							<div class="col-md-3">
+								<h3>orderBy 'years' -1</h3>
+								<ul v-for="tech in techs | orderBy 'years' -1 ">
+									<li>{{ tech.name }}</li>
+								</ul>
+							</div>
+							<div class="col-md-3">
+								<h3>orderBy 'years' -1 | years>0</h3>
+								<ul v-for="tech in techs | years | orderBy 'years' -1 ">
+									<li>{{ tech.name }}</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="panel">
 					<h2>Example v-for</h2>
 					<div class="panel panel-default">
 						<div class="panel-body">
@@ -142,14 +174,19 @@
 		</div>
 	</script>
 	<script type="text/template" id="welcome-message">
-		<h1>{{welcome_message}}, {{full_name}}</h1>
+		<h1>{{welcome_message}}, {{full_name | uppercase}}</h1>
 	</script>
 	<script type="text/template" id="welcome_system">
-		<h5>{{welcome_text}}, <b>{{reverse_name}}</b> </h5>
+		<h5>{{welcome_text}}, <b>{{reverse_name | ucwords}}</b> </h5>
 	</script>
 	<script type="text/javascript">
 		Vue.component('hello-vue',{
 			template: '<h2>Hello Vue.js</h2>'
+		});
+		Vue.filter('years',function(techs){
+			return techs.filter(function(tech){
+				return tech.years > 0;
+			});
 		});
 		Vue.component('welcome_system',{
 			template: '#welcome_system',
