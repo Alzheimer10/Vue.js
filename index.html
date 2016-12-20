@@ -14,17 +14,30 @@
 					<div class="row" style="min-height: 100px">
 						<img src="logo_vue.png" v-bind:title="years_php" width="70px" class="pull-left">
 						<hello-vue class="pull-rigth"></hello-vue>
-						<div class="col-xs-12" v-if="name">
-							<welcome-message v-bind:name="name" v-bind:gender="gender"></welcome-message>
-							<p>Bienvenido al sistema desarrollado en Vue.js {{ !name.split('').reverse().join('') }}¡</p>
+
+						<div class="col-xs-10">
+							<div class="alert alert-warning" v-if="!name || name.length <3 || !lastname || lastname.length < 4">
+								<ul>
+									<li v-show="!name">Ingrese un nombre</li>
+									<li v-show="name.length < 3">El nombre debe ser mayor a 3 caracteres</li>
+									<li v-show="!lastname">Ingrese el apellido</li>
+									<li v-show="lastname.length < 4">El apellido debe ser mayor a 3 caracteres</li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-xs-12" v-if="name || lastname">
+							<welcome-message v-bind:name="name" v-bind:lastname="lastname" v-bind:gender="gender" v-bind:spanish="spanish"></welcome-message>
+							<p>Bienvenido al sistema desarrollado en Vue.js <b>{{reverse_name}}</b> ¡</p>
 						</div>
 					</div>
 					<div class="input-group">
 					  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
 						<input type="text" class="form-control" placeholder="name" v-model="name">
+						<input type="text" class="form-control" placeholder="lastname" v-model="lastname">
 					</div>
 					<label>Masculino: <input type="radio" value="m" v-model="gender"></label>
 					<label>Femenino: <input type="radio" value="f" v-model="gender"></label>
+					<label>Hablas español?: <input type="checkbox" v-model="spanish"></label>
 					<div class="panel">
 						<h2>Components</h2>
 						<div class="panel panel-default">
@@ -83,12 +96,6 @@
 						</form>
 					</div>
 				</div>
-				<div class="alert alert-danger" v-if="!name | name.length <3">
-					<ul>
-						<li v-show="!name">Ingrese un nombre</li>
-						<li v-show="name.length < 3">El nombre debe ser mayor a 3 caracteres</li>
-					</ul>
-				</div>
 			</div>
 			<div class="col-md-4">
 				<div class="row">
@@ -124,7 +131,7 @@
 		</div>
 	</script>
 	<script type="text/template" id="welcome-message">
-		<h1>{{ gender=='m' ? 'Bienvenido' : 'Bienvenida'}}, {{name}}</h1>
+		<h1>{{welcome_message}}, {{full_name}}</h1>
 	</script>
 	<script type="text/javascript">
 		Vue.component('hello-vue',{
@@ -132,9 +139,26 @@
 		});
 		Vue.component('welcome-message',{
 			template: '#welcome-message',
+			data:{
+				spanish: true
+			},
+			computed:{
+				welcome_message:function(){
+					if (this.spanish){
+						return this.gender == 'm' ? 'Bienvenido' : 'Bienvenida';
+					}else{
+						return 'Welcome';
+					}
+				},
+				full_name:function(){
+					return this.name+' '+this.lastname;
+				}
+			},
 			props:{
 				gender: {type: String, require: false, default: 'm'},
-				name: {type: String, require: true}
+				spanish: {type: Boolean, require: true, default: true},
+				name: {type: String, require: true},
+				lastname: {type: String, require: true}
 			}
 		});
 		Vue.component('years-exp',{
@@ -153,7 +177,9 @@
 			el: '#app',
 			data:{
 				name: "Carlos",
+				lastname: "Jimenez",
 				gender: "m",
+				spanish: true,
 				techs: [
 					{ name: 'php', years: 0},
 					{ name: 'js', years: 0},
@@ -188,6 +214,16 @@
 				newTech: function(){
 					this.techs.push(this.new_tech);
 					this.new_tech = {name: '',years: 0};
+				}
+			},
+			watch:{
+				spanish: function(spanish){
+					alert(spanish);
+				}
+			},
+			computed:{
+				reverse_name:function(){
+					return (this.name+' '+this.lastname).split('').reverse().join('');
 				}
 			}
 		});
