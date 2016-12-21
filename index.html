@@ -12,12 +12,14 @@
 	</div>
 	<div class="container" id="app" style="width: 90%;padding: 0px">
 		<div class="row">
+			<div class="col-xs-12">
+				<img src="logo_vue.png" v-bind:title="years_php" width="70px" class="pull-left">
+				<hello-vue class="pull-rigth"></hello-vue>
+				<a href="repaso.html" title="">repaso</a>
+			</div>
 			<div class="col-md-8">
 				<form @submit.prevent="signUp(false)"> 
 					<div class="row" style="min-height: 100px">
-						<img src="logo_vue.png" v-bind:title="years_php" width="70px" class="pull-left">
-						<hello-vue class="pull-rigth"></hello-vue>
-
 						<div class="col-xs-10">
 							<div class="alert alert-warning" v-if="!name || name.length <3 || !lastname || lastname.length < 4">
 								<ul>
@@ -116,7 +118,6 @@
 							</div>
 						</div>
 					</div>
-
 				</div>
 				<div class="panel">
 					<h2>Example v-for</h2>
@@ -129,9 +130,9 @@
 						<form class="form" @submit.prevent="newNotes">
 							<div class="panel-body">
 								<input type="text" placeholder="Autor" class="form-control" v-model="new_note.autor">
-				<hr>
+									<hr>
 								<textarea class="form-control" v-model="new_note.text"></textarea>
-				<hr>
+									<hr>
 								<button type="submit" class="btn btn-primary" v-bind:disabled="!new_note.autor && new_note.text">Agregar</button>
 							</div>
 						</form>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Prepaso Vue</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container" id="app" style="width: 90%;padding: 0px">
+		<div class="row">
+			<div class="col-xs-12">
+				<img src="logo_vue.png" v-bind:title="years_php" width="70px" class="pull-left">
+				<hello-vue class="pull-rigth"></hello-vue>
+				<a href="index.html" title="">index</a>
+			</div>
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="">
+						<table class="table">
+							<caption><h2>Notes</h2></caption>
+							<thead>
+								<tr>
+									<th>Category</th>
+									<th>Note</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="note in notes" is="note-row" :note.sync="note" :categories="categories">
+								</tr>
+								<tr>
+									<td><select_category :categories="categories" :id.sync="new_note.category_id"></select_category></td>
+									<td><input type="text" class="form-control" v-model="new_note.text"></td>
+									<td style="float: right;">
+										<a href="#" @click="createNote()" class="btn btn-primary"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+									</td>
+								</tr>
+									<template id="select_category_tpl">
+										<select v-model="id" class="form-control" >
+											<option value="">Seleccione una categoria</option>
+											<option  v-for="category in categories" :value="category.id">{{ category.name }}</option>
+										</select>
+									</template>
+									<template id="note_row_tpl">
+										<tr>
+											<template v-if="!editing">	
+												<td>{{ note.category_id | category_name }}</td>
+												<td>{{note.text}}</td>
+												<td style="float: right;">
+													<a href="#" @click="edit(note)" class="btn btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+													<a href="#" @click="remove(note)" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+												</td>
+											</template>
+											<template v-else>
+												<td><select_category :categories="categories" :id.sync="note.category_id"></select_category></td>
+												<td><input type="text" class="form-control" v-model="note.text"></td>
+												<td  style="float: right;">
+													<a href="#" @click="update(note)" class="btn btn-warning"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+													<a href="#" @click="cancel(note)" class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+												</td>
+											</template>
+										</tr>
+									</template>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="row">
+					<pre>{{$data|json}}</pre>
+				</div>
+			</div>
+		</div>
+	</div>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.12/vue.js"></script>
+	 <script src="js/repaso.js"></script>
+	<script type="text/template" >
+
+	</script>
+</body>
+</html>
